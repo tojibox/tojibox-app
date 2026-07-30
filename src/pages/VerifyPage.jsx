@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { verifyReport } from '../services/api';
-import { giwaExplorerTxUrl, giwaExplorerAddressUrl } from '../constants/chain';
 
 export default function VerifyPage() {
   const { hash } = useParams();
@@ -71,58 +70,31 @@ export default function VerifyPage() {
                     <div className="font-mono text-xs text-slate-300 break-all">{result.report_hash}</div>
                   </div>
 
-                  {/* On-Chain Audit Proof — the GIWA tx that recorded the report hash */}
-                  {result.onchain_proof && (
-                    <div className="pt-2 border-t border-slate-800">
-                      <div className="text-xs text-teal-600 font-semibold uppercase tracking-wide mb-2">
-                        On-Chain Audit Proof
-                      </div>
-                      <div className="bg-[#0a1a1a] border border-teal-900 rounded-lg p-3 space-y-1.5">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-slate-500">Tx hash</span>
-                          <span className="text-teal-300 font-mono">{result.onchain_proof.tx_hash}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="text-slate-500">Block</span>
-                          <span className="text-teal-300 font-mono">{result.onchain_proof.block_number}</span>
-                        </div>
-                        {result.onchain_proof.tx_hash && (
-                          <a
-                            href={giwaExplorerTxUrl(result.onchain_proof.tx_hash)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block text-xs text-teal-400 hover:text-teal-200 underline mt-1"
-                          >
-                            View on GIWA Explorer →
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ERC-721 Receipt */}
-                  {result.erc721_receipt && (
+                  {/* On-chain receipt — a single TogiboxReportReceipt (ERC-721) mint on
+                      GIWA covers both the audit-timestamp and the receipt NFT, so the
+                      API returns one nft_receipt object rather than two proofs. */}
+                  {result.nft_receipt && (
                     <div className="pt-2 border-t border-slate-800">
                       <div className="text-xs text-yellow-600 font-semibold uppercase tracking-wide mb-2">
-                        ERC-721 Receipt
+                        On-Chain Receipt (ERC-721)
                       </div>
                       <div className="bg-[#1a1500] border border-yellow-900 rounded-lg p-3 space-y-1.5">
                         <div className="flex justify-between text-xs">
-                          <span className="text-slate-500">Contract</span>
-                          <span className="text-yellow-300 font-mono">{result.erc721_receipt.contract_address}</span>
+                          <span className="text-slate-500">Token ID</span>
+                          <span className="text-yellow-300 font-mono">{result.nft_receipt.token_id}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-slate-500">Token ID</span>
-                          <span className="text-yellow-300 font-mono">{result.erc721_receipt.token_id}</span>
+                          <span className="text-slate-500">Tx hash</span>
+                          <span className="text-yellow-300 font-mono">{result.nft_receipt.tx_hash}</span>
                         </div>
-                        {result.erc721_receipt.contract_address && (
+                        {result.nft_receipt.explorer_url && (
                           <a
-                            href={giwaExplorerAddressUrl(result.erc721_receipt.contract_address)}
+                            href={result.nft_receipt.explorer_url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="block text-xs text-yellow-400 hover:text-yellow-200 underline mt-1"
                           >
-                            View NFT on GIWA Explorer →
+                            View on GIWA Explorer →
                           </a>
                         )}
                       </div>

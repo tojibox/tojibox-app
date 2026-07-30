@@ -592,11 +592,11 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
         // NFT receipt are a single on-chain action (TogiboxReportReceipt mint),
         // so this collapses the old separate HCS-sequence / NFT-serial rows
         // into one "GIWA TX" + one "RECEIPT" row.
-        const txLabel = seal.onchain_tx_hash
-          ? shortHash(seal.onchain_tx_hash)
+        const txLabel = seal.nft_tx_hash
+          ? shortHash(seal.nft_tx_hash)
           : 'pending';
-        const receiptLabel = seal.token_id != null
-          ? `TogiboxReceipt #${seal.token_id}${seal.contract_address ? ` (${shortHash(seal.contract_address)})` : ''}`
+        const receiptLabel = seal.nft_token_id != null
+          ? `TogiboxReceipt #${seal.nft_token_id}`
           : 'pending';
         const sealRows = [
           ['ORACLE',     seal.oracle_address],
