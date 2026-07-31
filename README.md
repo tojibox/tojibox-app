@@ -1,6 +1,6 @@
-# togibox-app
+# tojibox-app
 
-React frontend for **Togibox** — a decentralized land registry for Wake County, NC,
+React frontend for **Tojibox** — a decentralized land registry for Wake County, NC,
 ported from the Hedera-based [ZoneProof](https://github.com) project to
 **GIWA** (an OP Stack EVM L2, testnet "GIWA Sepolia", chain ID `91342`).
 
@@ -8,9 +8,9 @@ This is one of three sibling repos:
 
 | Repo | Owns |
 |---|---|
-| `togibox-scraper` | Wake County scraping, merkle-commit pipeline, `TogiboxOracle.sol` |
-| `togibox-api` | FastAPI serving layer, x402 payment gate, report signing, `TogiboxReportReceipt.sol` |
-| **`togibox-app`** | This repo — React/Vite frontend |
+| `tojibox-scraper` | Wake County scraping, merkle-commit pipeline, `TojiboxOracle.sol` |
+| `tojibox-api` | FastAPI serving layer, x402 payment gate, report signing, `TojiboxReportReceipt.sol` |
+| **`tojibox-app`** | This repo — React/Vite frontend |
 
 ## What it does
 
@@ -21,7 +21,7 @@ This is one of three sibling repos:
    branded PDF due-diligence report with an embedded QR verification seal.
 3. **Report Verification** — `/verify/:hash` independently checks a report's ECDSA
    signature, the GIWA transaction that anchored its hash on-chain, and its
-   ERC-721 receipt (`TogiboxReportReceipt`).
+   ERC-721 receipt (`TojiboxReportReceipt`).
 4. **AI Zoning Assistant** — ask questions in plain English ("Show N1 to B1
    conversions") and get results mapped directly onto the parcel map.
 
@@ -58,16 +58,16 @@ ZoneProof app in a few concrete ways:
 ## Folder structure
 
 ```
-togibox-app/
+tojibox-app/
 ├── index.html                  # HTML shell — title, meta tags, favicon
 ├── tailwind.config.js          # Tailwind theme
-├── vite.config.js              # Vite config — dev proxy to togibox-api (/oracle) + AI chat backend (/api)
+├── vite.config.js              # Vite config — dev proxy to tojibox-api (/oracle) + AI chat backend (/api)
 ├── vercel.json                 # Vercel build config (npm install && npm run build → dist/)
 ├── public/
-│   ├── togibox-wordmark.svg    # Placeholder brand assets — see TODO below
-│   ├── togibox-favicon.svg
-│   ├── togibox.svg
-│   └── Togibox Logo.svg
+│   ├── tojibox-wordmark.svg    # Placeholder brand assets — see TODO below
+│   ├── tojibox-favicon.svg
+│   ├── tojibox.svg
+│   └── Tojibox Logo.svg
 └── src/
     ├── main.jsx                # React root — mounts App
     ├── App.jsx                 # Router setup — 5 routes: /, /map, /verify/:hash, /tech, /problem
@@ -97,10 +97,10 @@ togibox-app/
   `https://sepolia-rpc.giwa.io/`, explorer `https://sepolia-explorer.giwa.io`)
 - `RECEIVER_ADDRESS` — the oracle's GIWA address that collects x402 payments
 - `ETH_AMOUNT` — price to unlock a full report (`0.001` ETH, matches
-  togibox-api's x402 middleware default)
+  tojibox-api's x402 middleware default)
 - `giwaExplorerTxUrl(hash)` / `giwaExplorerAddressUrl(addr)` — explorer link builders
 - `ORACLE_CONTRACT_ADDRESS` / `RECEIPT_CONTRACT_ADDRESS` — optional, enable "view
-  on GIWA Explorer" links once togibox-scraper/togibox-api are deployed
+  on GIWA Explorer" links once tojibox-scraper/tojibox-api are deployed
 
 ## Local setup
 
@@ -114,10 +114,10 @@ npm run dev
 # App available at http://localhost:5174
 ```
 
-The dev server proxies `/oracle/*` to `togibox-api` (default `http://localhost:8001`,
+The dev server proxies `/oracle/*` to `tojibox-api` (default `http://localhost:8001`,
 rewritten to `/api/oracle/*`) and `/api/*` to an optional separate AI chat backend
 (default `http://localhost:8000`). Adjust the ports in `vite.config.js` if your
-local `togibox-api` runs elsewhere.
+local `tojibox-api` runs elsewhere.
 
 ## Environment variables
 
@@ -126,19 +126,19 @@ local `togibox-api` runs elsewhere.
 | `VITE_API_BASE_URL` | Base URL of the AI chat backend (optional separate service) |
 | `VITE_MAPBOX_TOKEN` | Mapbox public token (`pk.ey...`) — required for map rendering |
 | `VITE_RECEIVER_ADDRESS` | GIWA address that receives x402 report payments |
-| `VITE_ORACLE_CONTRACT_ADDRESS` | Deployed `TogiboxOracle.sol` address (optional, enables explorer links) |
-| `VITE_RECEIPT_CONTRACT_ADDRESS` | Deployed `TogiboxReportReceipt.sol` address (optional, enables explorer links) |
+| `VITE_ORACLE_CONTRACT_ADDRESS` | Deployed `TojiboxOracle.sol` address (optional, enables explorer links) |
+| `VITE_RECEIPT_CONTRACT_ADDRESS` | Deployed `TojiboxReportReceipt.sol` address (optional, enables explorer links) |
 
 No secret or real token is committed anywhere in this repo — copy `.env.example`
 to `.env` (gitignored) and fill in real values locally.
 
 ## TODO — brand assets
 
-`public/togibox-*.svg` and `public/Togibox Logo.svg` are **direct copies of the
+`public/tojibox-*.svg` and `public/Tojibox Logo.svg` are **direct copies of the
 original ZoneProof artwork, only renamed** — the logo shapes, wordmark text, and
 colors inside them still say "ZoneProof" and were not hand-edited (that requires
 real design work this port didn't attempt). Swap these four files for real
-Togibox brand assets before shipping. `hedera-icon.png` was dropped entirely
+Tojibox brand assets before shipping. `hedera-icon.png` was dropped entirely
 (no GIWA equivalent icon available locally); the on-chain marker badge on the
 map now renders a plain inline SVG checkmark instead — see the comment above
 `placeOnChainMarker` in `src/pages/MapPage.jsx`.
@@ -147,9 +147,9 @@ map now renders a plain inline SVG checkmark instead — see the comment above
 
 - `verification_seal` / `onchain_proof` / `erc721_receipt` field shapes
   (`src/pages/MapPage.jsx`, `src/pages/VerifyPage.jsx`) are **assumed**, not
-  confirmed against a live `togibox-api` — that sibling repo didn't exist yet
+  confirmed against a live `tojibox-api` — that sibling repo didn't exist yet
   at the time this frontend was ported. Adjust field names if the actual API
-  response shape differs once `togibox-api`'s `/verify/{hash}` and report
+  response shape differs once `tojibox-api`'s `/verify/{hash}` and report
   routes are implemented.
 - `ORACLE_CONTRACT_ADDRESS` / `RECEIPT_CONTRACT_ADDRESS` are blank until the
   contracts are deployed; the UI falls back to "not yet deployed" copy.

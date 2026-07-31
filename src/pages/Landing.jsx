@@ -30,7 +30,7 @@ const STEPS = [
   {
     num: '03',
     title: 'Root Anchored on GIWA',
-    desc: 'The consensus Merkle root (32 bytes) is written to TogiboxOracle.sol on GIWA — an OP Stack EVM L2. Each batch is forever on-chain and publicly verifiable.',
+    desc: 'The consensus Merkle root (32 bytes) is written to TojiboxOracle.sol on GIWA — an OP Stack EVM L2. Each batch is forever on-chain and publicly verifiable.',
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
@@ -92,7 +92,7 @@ export default function Landing() {
       <nav className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 py-4"
         style={{ background: 'rgba(5,10,16,0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(14,165,233,0.08)' }}>
         <div className="flex items-center">
-          <img src="/togibox-wordmark.svg" alt="Togibox" className="h-10 w-auto" />
+          <img src="/tojibox-wordmark.svg" alt="Tojibox" className="h-10 w-auto" />
         </div>
 
         <div className="hidden md:flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold"
@@ -316,7 +316,7 @@ export default function Landing() {
       {/* ── Footer ── */}
       <footer className="border-t border-white/5 py-8 px-6 text-center text-gray-600 text-xs">
         <div className="flex items-center justify-center gap-2 mb-2">
-          <img src="/togibox-favicon.svg" alt="Togibox" className="w-5 h-5 opacity-40" />
+          <img src="/tojibox-favicon.svg" alt="Tojibox" className="w-5 h-5 opacity-40" />
         </div>
         <div>Chainlink CRE + GIWA + Wake County GIS</div>
         <div className="mt-1">

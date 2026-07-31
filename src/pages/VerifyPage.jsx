@@ -12,7 +12,7 @@ export default function VerifyPage() {
     if (!hash) return;
     verifyReport(hash)
       .then(data => { setResult(data); setLoading(false); })
-      .catch(() => { setResult({ valid: false, reason: 'Could not reach Togibox oracle.' }); setLoading(false); });
+      .catch(() => { setResult({ valid: false, reason: 'Could not reach Tojibox oracle.' }); setLoading(false); });
   }, [hash]);
 
   return (
@@ -47,12 +47,12 @@ export default function VerifyPage() {
                 <span className="text-2xl">{result.valid ? '✅' : '❌'}</span>
                 <div>
                   <div className={`font-bold text-base ${result.valid ? 'text-teal-300' : 'text-red-300'}`}>
-                    {result.valid ? 'Authentic Togibox Report' : 'Verification Failed'}
+                    {result.valid ? 'Authentic Tojibox Report' : 'Verification Failed'}
                   </div>
                   <div className="text-xs text-slate-400 mt-0.5">
                     {result.valid
-                      ? 'Signed by togibox.eth oracle · Logged on GIWA · ERC-721 receipt minted'
-                      : result.reason || 'Signature does not match the Togibox oracle'}
+                      ? 'Signed by tojibox.eth oracle · Logged on GIWA · ERC-721 receipt minted'
+                      : result.reason || 'Signature does not match the Tojibox oracle'}
                   </div>
                 </div>
               </div>
@@ -70,7 +70,7 @@ export default function VerifyPage() {
                     <div className="font-mono text-xs text-slate-300 break-all">{result.report_hash}</div>
                   </div>
 
-                  {/* On-chain receipt — a single TogiboxReportReceipt (ERC-721) mint on
+                  {/* On-chain receipt — a single TojiboxReportReceipt (ERC-721) mint on
                       GIWA covers both the audit-timestamp and the receipt NFT, so the
                       API returns one nft_receipt object rather than two proofs. */}
                   {result.nft_receipt && (
@@ -106,7 +106,7 @@ export default function VerifyPage() {
               {!result.valid && (
                 <div className="text-center py-4">
                   <p className="text-slate-500 text-sm">
-                    This hash was not issued by the Togibox oracle, or the report has been tampered with.
+                    This hash was not issued by the Tojibox oracle, or the report has been tampered with.
                   </p>
                 </div>
               )}
@@ -129,7 +129,7 @@ export default function VerifyPage() {
       </div>
 
       <p className="mt-6 text-xs text-slate-700 max-w-sm text-center">
-        Every Togibox report is signed with ECDSA, and its hash plus an ERC-721
+        Every Tojibox report is signed with ECDSA, and its hash plus an ERC-721
         receipt are minted on GIWA — a public OP-Stack L2 — for tamper-proof,
         on-chain verification.
       </p>

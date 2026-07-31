@@ -7,7 +7,7 @@ const stagger = { show: { transition: { staggerChildren: 0.12 } } };
 
 // ── On-chain links ─────────────────────────────────────────────────────────────
 // GIWA is plain OP-Stack EVM — no HCS topics / HTS token IDs to link to like the
-// Hedera version. Links below resolve to the two Togibox contracts once
+// Hedera version. Links below resolve to the two Tojibox contracts once
 // deployed (see README — addresses come from VITE_ORACLE_CONTRACT_ADDRESS /
 // VITE_RECEIPT_CONTRACT_ADDRESS); until then they fall back to the bare
 // GIWA Sepolia explorer.
@@ -27,7 +27,7 @@ export default function TechPage() {
       <nav className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 py-4"
         style={{ background: 'rgba(5,10,16,0.9)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <button onClick={() => navigate('/')} className="flex items-center">
-          <img src="/togibox-wordmark.svg" alt="Togibox" className="h-9 w-auto" />
+          <img src="/tojibox-wordmark.svg" alt="Tojibox" className="h-9 w-auto" />
         </button>
         <div className="flex items-center gap-3">
           <button onClick={() => navigate('/map')}
@@ -57,7 +57,7 @@ export default function TechPage() {
             </span>
           </motion.h1>
           <motion.p variants={fadeUp} className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Togibox combines GIWA, Chainlink CRE, and ENS to replace a $12,000–$20,000
+            Tojibox combines GIWA, Chainlink CRE, and ENS to replace a $12,000–$20,000
             vendor due diligence process with cryptographic proof — verifiable in seconds.
           </motion.p>
         </motion.div>
@@ -68,7 +68,7 @@ export default function TechPage() {
           {[
             { label: 'Current cost', value: '$12K – $20K', sub: 'per parcel, paid to vendors', color: '#ef4444' },
             { label: 'Time to verify', value: 'Weeks', sub: 'fragmented county data', color: '#f59e0b' },
-            { label: 'With Togibox', value: '< 5 seconds', sub: 'scan QR · verified on-chain', color: '#22c55e' },
+            { label: 'With Tojibox', value: '< 5 seconds', sub: 'scan QR · verified on-chain', color: '#22c55e' },
           ].map(({ label, value, sub, color }) => (
             <motion.div key={label} variants={fadeUp}
               className="rounded-2xl p-6 text-center"
@@ -88,29 +88,29 @@ export default function TechPage() {
           badge="GIWA"
           badgeBg="rgba(124,92,252,0.15)"
           title="Two Contracts. One OP-Stack L2."
-          subtitle="Every layer of the Togibox trust chain writes to a plain EVM contract on GIWA — no separate SDK, no sidecar process, no relay quirks."
+          subtitle="Every layer of the Tojibox trust chain writes to a plain EVM contract on GIWA — no separate SDK, no sidecar process, no relay quirks."
           logo={<GiwaLogo />}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
             <GiwaCard
               title="Report Hash Anchored On-Chain"
-              chip="TogiboxReportReceipt.sol"
+              chip="TojiboxReportReceipt.sol"
               href={LINKS.receiptContract}
-              description="Every time a due diligence report is generated, its hash — along with the property PIN and oracle address — is written into TogiboxReportReceipt's public contract state. Any third party can independently verify on the GIWA explorer without trusting Togibox."
+              description="Every time a due diligence report is generated, its hash — along with the property PIN and oracle address — is written into TojiboxReportReceipt's public contract state. Any third party can independently verify on the GIWA explorer without trusting Tojibox."
               icon="📋"
             />
             <GiwaCard
               title="Petition Batch Merkle Root"
-              chip="TogiboxOracle.sol"
+              chip="TojiboxOracle.sol"
               href={LINKS.oracleContract}
-              description="Every zoning petition batch commit from the CRE oracle calls commitBatch() on TogiboxOracle — anchoring the exact Merkle root, batch ID, and petition count that entered the blockchain. Full audit trail of the data pipeline."
+              description="Every zoning petition batch commit from the CRE oracle calls commitBatch() on TojiboxOracle — anchoring the exact Merkle root, batch ID, and petition count that entered the blockchain. Full audit trail of the data pipeline."
               icon="🗂️"
             />
             <GiwaCard
-              title="TogiboxReceipt (ERC-721)"
-              chip="TogiboxReportReceipt.sol"
+              title="TojiboxReceipt (ERC-721)"
+              chip="TojiboxReportReceipt.sol"
               href={LINKS.receiptContract}
-              description="When a user pays for a report via x402, a TogiboxReceipt NFT is minted on GIWA. The token ID is the on-chain receipt — proof that this report was purchased and issued. Standard ERC-721, mintable directly from FastAPI via web3.py."
+              description="When a user pays for a report via x402, a TojiboxReceipt NFT is minted on GIWA. The token ID is the on-chain receipt — proof that this report was purchased and issued. Standard ERC-721, mintable directly from FastAPI via web3.py."
               icon="🪙"
             />
             <GiwaCard
@@ -127,7 +127,7 @@ export default function TechPage() {
             <FeatureRow icon="💸" title="x402 Payments"
               desc={`Every report download is gated by HTTP 402. The client pays ${ETH_AMOUNT} ETH and retries with the TX hash — verified directly against GIWA's JSON-RPC (eth_getTransactionReceipt), with replay protection.`} />
             <FeatureRow icon="🤖" title="AI Agent Auto-Payments"
-              desc="The Togibox MCP Server gives AI agents (Claude, etc.) tools to query parcels. When the agent gets a 402, it autonomously sends native ETH via ethers.js — no human action, no separate wallet SDK." />
+              desc="The Tojibox MCP Server gives AI agents (Claude, etc.) tools to query parcels. When the agent gets a 402, it autonomously sends native ETH via ethers.js — no human action, no separate wallet SDK." />
           </div>
         </TechSection>
 
@@ -149,7 +149,7 @@ export default function TechPage() {
                 { step: '01', title: 'Scrape', desc: 'Three CRE nodes independently pull rezoning petitions and parcel changes from Wake County\'s ArcGIS REST API on a schedule. Each node operates in isolation.' },
                 { step: '02', title: 'Hash', desc: 'Each node hashes all petition events into a SHA-256 Merkle tree. The Merkle root is a 32-byte cryptographic fingerprint of the entire zoning history.' },
                 { step: '03', title: 'Consensus', desc: '2-of-3 nodes must agree on the same Merkle root before a commit is allowed. No single node can corrupt the record — Byzantine Fault Tolerant.' },
-                { step: '04', title: 'Commit', desc: 'The consensus root is written to TogiboxOracle.sol on GIWA. Immutable, public, verifiable by anyone.' },
+                { step: '04', title: 'Commit', desc: 'The consensus root is written to TojiboxOracle.sol on GIWA. Immutable, public, verifiable by anyone.' },
               ].map(({ step, title, desc }) => (
                 <div key={step} className="flex gap-4 p-4 border-b last:border-b-0"
                   style={{ borderColor: 'rgba(55,91,210,0.15)', background: 'rgba(55,91,210,0.04)' }}>
@@ -184,16 +184,16 @@ export default function TechPage() {
           borderColor="rgba(82,152,255,0.15)"
           badge="ENS"
           badgeBg="rgba(82,152,255,0.15)"
-          title="togibox.eth — Cryptographic Oracle Identity"
-          subtitle="The Togibox oracle is identified by its ENS name. Every report carries a signed proof that traces back to togibox.eth — verifiable by anyone without trusting Togibox."
+          title="tojibox.eth — Cryptographic Oracle Identity"
+          subtitle="The Tojibox oracle is identified by its ENS name. Every report carries a signed proof that traces back to tojibox.eth — verifiable by anyone without trusting Tojibox."
           logo={<ENSLogo />}
         >
           <div className="mt-6 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
-                { num: '1', title: 'Oracle Signs', desc: 'The oracle signs every report hash with its ECDSA key (secp256k1 / EIP-191) — the same key that controls togibox.eth on Sepolia.' },
+                { num: '1', title: 'Oracle Signs', desc: 'The oracle signs every report hash with its ECDSA key (secp256k1 / EIP-191) — the same key that controls tojibox.eth on Sepolia.' },
                 { num: '2', title: 'PDF Carries Proof', desc: 'The PDF report embeds the oracle ENS name, address, report hash, ECDSA signature, GIWA tx hash, receipt token ID, and a QR code linking to the verify page.' },
-                { num: '3', title: 'Anyone Can Verify', desc: 'Scan the QR → resolve togibox.eth → recover signer → confirm match. The report is genuine if the addresses match. The GIWA tx and ERC-721 receipt provide two additional proof layers.' },
+                { num: '3', title: 'Anyone Can Verify', desc: 'Scan the QR → resolve tojibox.eth → recover signer → confirm match. The report is genuine if the addresses match. The GIWA tx and ERC-721 receipt provide two additional proof layers.' },
               ].map(({ num, title, desc }) => (
                 <div key={num} className="rounded-xl p-4"
                   style={{ background: 'rgba(82,152,255,0.06)', border: '1px solid rgba(82,152,255,0.15)' }}>
@@ -213,9 +213,9 @@ export default function TechPage() {
               <div>
                 <div className="text-sm font-bold text-blue-300 mb-1">Why ENS instead of just a raw address?</div>
                 <div className="text-xs text-slate-400 leading-relaxed">
-                  A raw Ethereum address is opaque. <strong className="text-slate-200">togibox.eth</strong> is a human-readable, decentralized identity.
-                  When a lender or tokenizer receives a PDF, they can independently look up <code className="text-blue-300">togibox.eth</code> to find
-                  the oracle's address without ever visiting the Togibox website — the identity lives on Ethereum, not on our servers.
+                  A raw Ethereum address is opaque. <strong className="text-slate-200">tojibox.eth</strong> is a human-readable, decentralized identity.
+                  When a lender or tokenizer receives a PDF, they can independently look up <code className="text-blue-300">tojibox.eth</code> to find
+                  the oracle's address without ever visiting the Tojibox website — the identity lives on Ethereum, not on our servers.
                 </div>
               </div>
             </div>
@@ -240,12 +240,12 @@ export default function TechPage() {
           </div>
           <div className="divide-y" style={{ divideColor: 'rgba(255,255,255,0.05)' }}>
             {[
-              { icon: '🗺️', actor: 'User', action: 'Searches property address or PIN on the Togibox map', tech: null },
+              { icon: '🗺️', actor: 'User', action: 'Searches property address or PIN on the Tojibox map', tech: null },
               { icon: '👁️', actor: 'Oracle', action: 'Shows free petition count preview (no payment)', tech: 'CRE data' },
               { icon: '💸', actor: 'User', action: `Pays ${ETH_AMOUNT} ETH via x402 to unlock the full report`, tech: 'GIWA x402' },
-              { icon: '✍️', actor: 'Oracle', action: 'Signs report with togibox.eth ECDSA key', tech: 'ENS identity' },
-              { icon: '📋', actor: 'GIWA', action: 'Report hash written into TogiboxReportReceipt contract state', tech: 'On-chain' },
-              { icon: '🪙', actor: 'GIWA', action: 'TogiboxReceipt NFT minted (ERC-721)', tech: 'ERC-721' },
+              { icon: '✍️', actor: 'Oracle', action: 'Signs report with tojibox.eth ECDSA key', tech: 'ENS identity' },
+              { icon: '📋', actor: 'GIWA', action: 'Report hash written into TojiboxReportReceipt contract state', tech: 'On-chain' },
+              { icon: '🪙', actor: 'GIWA', action: 'TojiboxReceipt NFT minted (ERC-721)', tech: 'ERC-721' },
               { icon: '📄', actor: 'User', action: 'Downloads PDF with seal, QR code, GIWA tx, receipt token ID', tech: 'Report' },
               { icon: '✅', actor: 'Anyone', action: 'Scans QR → /verify/hash → checks ECDSA + GIWA tx + ERC-721 receipt', tech: 'All proofs' },
             ].map(({ icon, actor, action, tech }, i) => (

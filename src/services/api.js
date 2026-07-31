@@ -1,5 +1,5 @@
 /**
- * Centralized calls to togibox-api's oracle routes (proxied through Vite's
+ * Centralized calls to tojibox-api's oracle routes (proxied through Vite's
  * `/oracle` -> `/api/oracle` rewrite in dev, same-origin in prod) plus the
  * optional AI chat backend. Mirrors the uszoning-app `services/api.js`
  * convention — the original zoneproof frontend called `fetch` inline from

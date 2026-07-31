@@ -24,12 +24,12 @@ export function giwaExplorerAddressUrl(address) {
 export const RECEIVER_ADDRESS =
   import.meta.env.VITE_RECEIVER_ADDRESS || '0x0000000000000000000000000000000000000000';
 
-// Price for unlocking a full parcel history + PDF report (matches togibox-api's
+// Price for unlocking a full parcel history + PDF report (matches tojibox-api's
 // x402 middleware default price, configurable there via .env).
 export const ETH_AMOUNT = 0.001;
 
 // Deployed contract addresses — optional, used for "view on GIWA" links across
-// the app. Left blank until togibox-scraper / togibox-api are deployed; UI
+// the app. Left blank until tojibox-scraper / tojibox-api are deployed; UI
 // falls back to "not yet deployed" copy when unset. See README TODOs.
 export const ORACLE_CONTRACT_ADDRESS = import.meta.env.VITE_ORACLE_CONTRACT_ADDRESS || '';
 export const RECEIPT_CONTRACT_ADDRESS = import.meta.env.VITE_RECEIPT_CONTRACT_ADDRESS || '';

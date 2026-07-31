@@ -12,8 +12,8 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
       },
-      // togibox-api (FastAPI) — oracle/parcel/verify/x402 routes.
-      // Default port matches togibox-api's .env.example (FastAPI on :8001).
+      // tojibox-api (FastAPI) — oracle/parcel/verify/x402 routes.
+      // Default port matches tojibox-api's .env.example (FastAPI on :8001).
       '/oracle': {
         target: 'http://localhost:8001',
         changeOrigin: true,

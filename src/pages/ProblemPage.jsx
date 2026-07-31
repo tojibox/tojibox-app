@@ -26,7 +26,7 @@ export default function ProblemPage() {
       <nav className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 py-4"
         style={{ background: 'rgba(5,10,16,0.92)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <button onClick={() => navigate('/')} className="flex items-center">
-          <img src="/togibox-wordmark.svg" alt="Togibox" className="h-9 w-auto" />
+          <img src="/tojibox-wordmark.svg" alt="Tojibox" className="h-9 w-auto" />
         </button>
         <div className="flex items-center gap-3">
           <button onClick={() => navigate('/tech')}
@@ -176,7 +176,7 @@ export default function ProblemPage() {
           <button onClick={() => navigate('/tech')}
             className="mt-6 inline-flex items-center gap-2 px-7 py-3 rounded-xl font-bold text-white text-sm transition-all hover:scale-105"
             style={{ background: 'linear-gradient(135deg,#0ea5e9,#6366f1)' }}>
-            See How Togibox Fixes This →
+            See How Tojibox Fixes This →
           </button>
         </motion.div>
 
