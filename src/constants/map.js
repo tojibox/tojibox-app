@@ -11,6 +11,7 @@ export const MAP_ZOOM = 11;
 export const GEOCODE_BBOX = '-79.2,35.5,-78.3,36.1';
 
 export const MAP_STYLES = {
+  light: { name: 'Light', url: 'mapbox://styles/mapbox/light-v11' },
   dark: { name: 'Dark', url: 'mapbox://styles/mapbox/dark-v11' },
   satellite: { name: 'Satellite', url: 'mapbox://styles/mapbox/satellite-streets-v12' },
   streets: { name: 'Streets', url: 'mapbox://styles/mapbox/streets-v12' },

@@ -41,8 +41,8 @@ const ZONE_BASE = {
   'GC':   { name: 'General Commercial',       desc: 'Wide array of commercial uses including auto dealers, big-box retail, and service establishments with large parking needs.' },
   'OP':   { name: 'Office Park',              desc: 'Suburban office campus with low-rise buildings, surface or structured parking, and landscaped setbacks.' },
   'MF':   { name: 'Multi-Family Residential', desc: 'Apartment buildings and multi-family housing at medium to high density.' },
-  'I-1':  { name: 'Industrial — Light',       desc: 'Light manufacturing, assembly, warehousing, research and development with limited off-site impacts.' },
-  'I-2':  { name: 'Industrial — Heavy',       desc: 'Heavy manufacturing, processing, and storage with potentially significant off-site impacts (noise, traffic, emissions).' },
+  'I-1':  { name: 'Industrial: Light',        desc: 'Light manufacturing, assembly, warehousing, research and development with limited off-site impacts.' },
+  'I-2':  { name: 'Industrial: Heavy',        desc: 'Heavy manufacturing, processing, and storage with potentially significant off-site impacts (noise, traffic, emissions).' },
 };
 
 function expandZoneCode(raw) {
@@ -72,10 +72,10 @@ function expandZoneCode(raw) {
   const base = ZONE_BASE[baseKey];
   const modDesc = [];
   modTokens.forEach(m => {
-    if (m === 'CU')       modDesc.push('Conditional Use — site-specific conditions negotiated and recorded with the city');
-    else if (m === 'PL')  modDesc.push('Planned — subject to an approved master development plan');
-    else if (m === 'UL')  modDesc.push('Urban Limited — compact urban-form standards; parking maximums enforced');
-    else if (/^\d+$/.test(m)) modDesc.push(`Intensity Level ${m} — height and floor-area ratio capped at tier ${m}`);
+    if (m === 'CU')       modDesc.push('Conditional Use: site-specific conditions negotiated and recorded with the city');
+    else if (m === 'PL')  modDesc.push('Planned: subject to an approved master development plan');
+    else if (m === 'UL')  modDesc.push('Urban Limited: compact urban-form standards; parking maximums enforced');
+    else if (/^\d+$/.test(m)) modDesc.push(`Intensity Level ${m}: height and floor-area ratio capped at tier ${m}`);
   });
 
   return {
@@ -85,15 +85,18 @@ function expandZoneCode(raw) {
   };
 }
 
+// Saturated/dark text on a pale tint — tuned for a light background (the
+// original dark-mode combo used light text on a pale tint, which reads as
+// low-contrast light-on-light now that the app is light-themed).
 const STATUS_COLORS = {
-  'Approved':                     { bg: 'rgba(34,197,94,0.15)',  border: 'rgba(34,197,94,0.4)',  text: '#4ade80' },
-  'Denied':                       { bg: 'rgba(239,68,68,0.15)',  border: 'rgba(239,68,68,0.4)',  text: '#f87171' },
-  'Withdrawn':                    { bg: 'rgba(107,114,128,0.15)',border: 'rgba(107,114,128,0.4)',text: '#9ca3af' },
-  'Active':                       { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.4)', text: '#fbbf24' },
-  'Pending City Council':         { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.4)', text: '#fbbf24' },
-  'Pending Planning Commission':  { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.4)', text: '#fbbf24' },
+  'Approved':                     { bg: '#ECFDF5', border: '#A7F3D0', text: '#047857' },
+  'Denied':                       { bg: '#FEF2F2', border: '#FECACA', text: '#B91C1C' },
+  'Withdrawn':                    { bg: '#F3F0E8', border: '#E2DED3', text: '#6B6862' },
+  'Active':                       { bg: '#FFFBEB', border: '#FDE68A', text: '#B45309' },
+  'Pending City Council':         { bg: '#FFFBEB', border: '#FDE68A', text: '#B45309' },
+  'Pending Planning Commission':  { bg: '#FFFBEB', border: '#FDE68A', text: '#B45309' },
 };
-const DEFAULT_STATUS = { bg: 'rgba(99,102,241,0.15)', border: 'rgba(99,102,241,0.4)', text: '#a5b4fc' };
+const DEFAULT_STATUS = { bg: '#EEF2FF', border: '#C7D2FE', text: '#4338CA' };
 
 function StatusBadge({ status }) {
   const c = STATUS_COLORS[status] || DEFAULT_STATUS;
@@ -174,22 +177,23 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
       const onChain = fullData.on_chain_count   ?? 0;
       const total   = fullData.total_petitions  ?? 0;
 
-      // Palette — all RGB triplets, spread with ...
-      const NAVY_HDR  = [8, 20, 48];      // header background
-      const TEAL      = [14, 165, 233];   // GIWA/brand accent (sky blue)
-      const NAVY      = [22, 35, 64];     // section title text
-      const NAVY_TBL  = [15, 40, 90];     // table header bg
-      const BLUE      = [37, 99, 200];    // petition numbers, links
-      const BODY      = [22, 30, 46];     // main body text
-      const LABEL     = [100, 116, 139];  // uppercase field labels
-      const MUTED     = [148, 163, 184];  // footer / captions
-      const RULE      = [214, 221, 232];  // divider lines
-      const ROW_ALT   = [246, 249, 252];  // alt table rows
-      const GREEN     = [21, 128, 61];    // approved / on-chain
+      // Palette — matches the app's Tojibox brand tokens (tailwind.config.js),
+      // not the old ZoneProof navy/sky-blue scheme. All RGB triplets, spread with ...
+      const NAVY_HDR  = [17, 17, 16];     // header background (ink)
+      const TEAL      = [92, 122, 153];   // brand accent — steel blue, from the site's gradient
+      const NAVY      = [17, 17, 16];     // section title bg (ink)
+      const NAVY_TBL  = [17, 17, 16];     // table header bg (ink)
+      const BLUE      = [78, 104, 132];   // petition numbers, links (darker steel blue, readable on white)
+      const BODY      = [24, 24, 22];     // main body text (ink)
+      const LABEL     = [107, 104, 98];   // uppercase field labels (muted)
+      const MUTED     = [156, 151, 140];  // footer / captions (lighter muted)
+      const RULE      = [226, 222, 211];  // divider lines (border)
+      const ROW_ALT   = [245, 243, 236];  // alt table rows (surface-alt)
+      const GREEN     = [4, 120, 87];     // approved / on-chain
       const RED       = [185, 28, 28];    // denied
-      const GRAY      = [107, 114, 128];  // withdrawn / pending
+      const GRAY      = [107, 104, 98];   // withdrawn / pending (muted)
       const GREEN_BG  = [236, 253, 245];  // on-chain verified box
-      const GREEN_BD  = [110, 231, 183];  // on-chain box border
+      const GREEN_BD  = [167, 243, 208];  // on-chain box border
 
       // ── helpers ────────────────────────────────────────────────────────────
       const newPageIfNeeded = (needed) => {
@@ -291,7 +295,7 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
       if (mapImgData) {
         const imgH = 185;
         // Subtle shadow rect behind map
-        doc.setFillColor(220, 227, 240);
+        doc.setFillColor(220, 216, 206);
         doc.rect(M + 2, y + 2, CW, imgH, 'F');
         // Map image
         doc.addImage(mapImgData, mapImgType, M, y, CW, imgH);
@@ -425,7 +429,7 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
           newPageIfNeeded(cardH + 8);
 
           // Light card bg
-          doc.setFillColor(246, 249, 252);
+          doc.setFillColor(...ROW_ALT);
           doc.setDrawColor(...RULE);
           doc.setLineWidth(0.4);
           doc.rect(M, y, CW, cardH, 'FD');
@@ -436,7 +440,7 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
           // Code label in accent mono
           doc.setFont('courier', 'bold');
           doc.setFontSize(9.5);
-          doc.setTextColor(6, 100, 160);
+          doc.setTextColor(...BLUE);
           doc.text(code, M + 10, y + 12);
 
           // Name in navy
@@ -491,7 +495,7 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
       y += boxH + 18;
 
       // Network metadata row
-      doc.setFillColor(246, 249, 252);
+      doc.setFillColor(...ROW_ALT);
       doc.rect(M, y, CW, 24, 'F');
       const meta = [
         ['Network', 'GIWA Sepolia'],
@@ -536,7 +540,7 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
 
           doc.setFont('courier', 'bold');
           doc.setFontSize(10);
-          doc.setTextColor(0, 120, 100);
+          doc.setTextColor(...GREEN);
           doc.text(h.petition_number, M + 10, y + 13);
 
           const det = [
@@ -639,7 +643,7 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
           // QR generation failed — show URL as fallback
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(6.5);
-          doc.setTextColor(37, 99, 200);
+          doc.setTextColor(...BLUE);
           doc.text(verifyUrl, M + 14, y + BOX_H - 10, { maxWidth: CW - 20 });
         }
 
@@ -650,7 +654,7 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
       const totalPages = doc.getNumberOfPages();
       for (let p = 1; p <= totalPages; p++) {
         doc.setPage(p);
-        doc.setFillColor(8, 20, 48);
+        doc.setFillColor(...NAVY_HDR);
         doc.rect(0, PH - 28, PW, 28, 'F');
         doc.setFillColor(...TEAL);
         doc.rect(0, PH - 28, PW, 1.5, 'F');
@@ -687,23 +691,21 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
       )}
 
       {/* ── Header ── */}
-      <div className="px-5 pt-5 pb-4 border-b flex-shrink-0"
-        style={{ borderColor: 'rgba(14,165,233,0.15)' }}>
+      <div className="px-5 pt-5 pb-4 border-b border-border flex-shrink-0">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-sky-400 mb-0.5">Parcel Details</div>
-            <div className="text-white font-black text-base leading-snug truncate">
+            <div className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-0.5">Parcel Details</div>
+            <div className="text-ink font-semibold text-base leading-snug truncate">
               {loading ? 'Loading…' : parcel?.site_address || pin}
             </div>
-            <div className="text-gray-500 text-xs mt-0.5 font-mono">{pin}</div>
+            <div className="text-muted text-xs mt-0.5 font-mono">{pin}</div>
           </div>
           <div className="flex items-center gap-1.5 flex-shrink-0 mt-0.5">
             {/* Download Report — locked until paid */}
             {isPaid ? (
               <button onClick={downloadReport} disabled={downloading}
                 title="Download PDF Report"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all disabled:opacity-40 hover:scale-105 active:scale-95"
-                style={{ background: 'rgba(14,165,233,0.15)', border: '1px solid rgba(14,165,233,0.35)', color: '#38bdf8' }}>
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-opacity disabled:opacity-40 hover:opacity-85 bg-ink text-background">
                 {downloading
                   ? <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
@@ -716,15 +718,14 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
                 <span>{downloading ? 'Generating…' : 'Download Report'}</span>
               </button>
             ) : (
-              <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold opacity-40 select-none"
-                style={{ border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af' }}>
+              <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold opacity-40 select-none border border-border text-muted">
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                 </svg>
                 Report
               </div>
             )}
-            <button onClick={onClose} className="text-gray-600 hover:text-gray-300 transition-colors p-1">
+            <button onClick={onClose} className="text-muted hover:text-ink transition-colors p-1">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -743,28 +744,26 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
               {[0, 0.18, 0.36].map((d, i) => (
                 <motion.div key={i} animate={{ opacity: [0.3, 1, 0.3] }}
                   transition={{ repeat: Infinity, duration: 1.2, delay: d }}
-                  className="w-2 h-2 rounded-full bg-sky-400" />
+                  className="w-2 h-2 rounded-full bg-ink" />
               ))}
             </div>
-            <span className="text-gray-500 text-xs">Fetching parcel data…</span>
+            <span className="text-muted text-xs">Fetching parcel data…</span>
           </div>
         )}
 
         {/* Parcel not found */}
         {!parcelData && !loading && !error && (
-          <div className="m-5 p-4 rounded-xl text-sm text-gray-400"
-            style={{ background: 'rgba(148,163,184,0.07)', border: '1px solid rgba(148,163,184,0.15)' }}>
-            <div className="font-semibold mb-1 text-gray-300">No data found</div>
-            <div className="text-xs text-gray-500">This parcel has no recorded data in Tojibox.</div>
+          <div className="m-5 p-4 rounded-xl text-sm text-muted bg-surface-alt border border-border">
+            <div className="font-semibold mb-1 text-ink">No data found</div>
+            <div className="text-xs text-muted">This parcel has no recorded data in Tojibox.</div>
           </div>
         )}
 
         {/* Error */}
         {error && !loading && (
-          <div className="m-5 p-4 rounded-xl text-sm text-red-300"
-            style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
-            <div className="font-bold mb-1">Oracle API unreachable</div>
-            <div className="text-xs text-red-400/80">{error}</div>
+          <div className="m-5 p-4 rounded-xl text-sm text-red-700 bg-red-50 border border-red-200">
+            <div className="font-semibold mb-1">Oracle API unreachable</div>
+            <div className="text-xs text-red-700/80">{error}</div>
           </div>
         )}
 
@@ -773,7 +772,7 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
           <>
             {/* FREE: 4 basic fields */}
             <div className="px-5 pt-4 pb-4">
-              <div className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">
+              <div className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-3">
                 Property Overview
               </div>
               <div className="grid grid-cols-2 gap-x-5 gap-y-3">
@@ -784,25 +783,23 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
                   { label: 'Type',     value: parcel?.type_and_use, span: true },
                 ].filter(r => r.value).map(({ label, value, span }) => (
                   <div key={label} className={span ? 'col-span-2' : ''}>
-                    <div className="text-[10px] text-gray-600 mb-0.5">{label}</div>
-                    <div className="text-gray-200 text-xs font-medium leading-snug">{value}</div>
+                    <div className="text-[10px] text-muted mb-0.5">{label}</div>
+                    <div className="text-ink text-xs font-medium leading-snug">{value}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mx-5 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }} />
+            <div className="mx-5 border-t border-border" />
 
             {/* LOCKED: Financial details (blurred) */}
-            <div className="mx-5 my-4 rounded-xl overflow-hidden"
-              style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
-              <div className="px-3 py-2 flex items-center gap-1.5"
-                style={{ background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                <svg className="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="mx-5 my-4 rounded-xl overflow-hidden border border-border">
+              <div className="px-3 py-2 flex items-center gap-1.5 bg-surface-alt border-b border-border">
+                <svg className="w-3 h-3 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                 </svg>
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-600">Financial Details</span>
-                <span className="ml-auto text-[10px] text-gray-700">Unlock to reveal</span>
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-muted">Financial Details</span>
+                <span className="ml-auto text-[10px] text-muted">Unlock to reveal</span>
               </div>
               <div className="px-3 py-3 grid grid-cols-2 gap-x-5 gap-y-3"
                 style={{ filter: 'blur(5px)', userSelect: 'none', pointerEvents: 'none' }}>
@@ -813,8 +810,8 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
                   { label: 'Heated Area',    value: parcel?.heated_area ? `${fmt(parcel.heated_area)} sf` : '—— sf' },
                 ].map(({ label, value }) => (
                   <div key={label}>
-                    <div className="text-[10px] text-gray-600 mb-0.5">{label}</div>
-                    <div className="text-gray-200 text-xs font-medium">{value}</div>
+                    <div className="text-[10px] text-muted mb-0.5">{label}</div>
+                    <div className="text-ink text-xs font-medium">{value}</div>
                   </div>
                 ))}
               </div>
@@ -822,27 +819,25 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
 
             {/* LOCKED: Rezoning history */}
             {!hasHistory ? (
-              <div className="mx-5 mb-5 p-4 rounded-xl text-sm text-gray-400"
-                style={{ background: 'rgba(148,163,184,0.07)', border: '1px solid rgba(148,163,184,0.15)' }}>
-                <div className="font-semibold mb-1 text-gray-300">No rezoning history</div>
-                <div className="text-xs text-gray-500">No rezoning petitions recorded for this parcel.</div>
+              <div className="mx-5 mb-5 p-4 rounded-xl text-sm text-muted bg-surface-alt border border-border">
+                <div className="font-semibold mb-1 text-ink">No rezoning history</div>
+                <div className="text-xs text-muted">No rezoning petitions recorded for this parcel.</div>
               </div>
             ) : (
-              <div className="mx-5 mb-5 rounded-2xl overflow-hidden"
-                style={{ border: '1px solid rgba(14,165,233,0.2)', background: 'rgba(14,165,233,0.02)' }}>
+              <div className="mx-5 mb-5 rounded-2xl overflow-hidden bg-surface-alt border border-border">
 
                 {/* Section label */}
                 <div className="px-4 pt-3.5 pb-2 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <svg className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#38bdf8' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3.5 h-3.5 flex-shrink-0 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    <span className="text-[10px] font-semibold uppercase tracking-widest text-muted">
                       Rezoning History · {total} petition{total !== 1 ? 's' : ''}
                     </span>
                   </div>
                   {peekOnChain > 0 && (
-                    <span className="text-[10px] font-bold text-green-400">{peekOnChain} on-chain</span>
+                    <span className="text-[10px] font-semibold text-green-700">{peekOnChain} on-chain</span>
                   )}
                 </div>
 
@@ -850,22 +845,21 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
                 <div className="relative px-4 pb-2" style={{ pointerEvents: 'none', userSelect: 'none' }}>
                   <div style={{ filter: 'blur(5px)', opacity: 0.55 }}>
                     {[0, 1].map(i => (
-                      <div key={i} className="mb-2 rounded-xl p-3"
-                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                      <div key={i} className="mb-2 rounded-xl p-3 bg-surface border border-border">
                         <div className="flex items-center justify-between mb-2">
-                          <div className="h-3.5 w-24 rounded-full" style={{ background: 'rgba(56,189,248,0.35)' }} />
-                          <div className="h-3.5 w-16 rounded-full" style={{ background: i === 0 ? 'rgba(34,197,94,0.35)' : 'rgba(249,115,22,0.35)' }} />
+                          <div className="h-3.5 w-24 rounded-full bg-border" />
+                          <div className="h-3.5 w-16 rounded-full bg-border" />
                         </div>
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="h-5 w-12 rounded" style={{ background: 'rgba(56,189,248,0.2)' }} />
-                          <div className="w-3 h-2 rounded" style={{ background: 'rgba(100,116,139,0.3)' }} />
-                          <div className="h-5 w-14 rounded" style={{ background: 'rgba(249,115,22,0.2)' }} />
+                          <div className="h-5 w-12 rounded bg-border" />
+                          <div className="w-3 h-2 rounded bg-border" />
+                          <div className="h-5 w-14 rounded bg-border" />
                         </div>
-                        <div className="h-2.5 w-36 rounded-full mb-1.5" style={{ background: 'rgba(100,116,139,0.25)' }} />
+                        <div className="h-2.5 w-36 rounded-full mb-1.5 bg-border" />
                         {i === 0 && peekOnChain > 0 && (
-                          <div className="mt-2 rounded-lg p-2" style={{ background: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.12)' }}>
-                            <div className="h-2.5 w-20 rounded-full mb-1.5" style={{ background: 'rgba(34,197,94,0.3)' }} />
-                            <div className="h-2 w-32 rounded-full" style={{ background: 'rgba(100,116,139,0.2)' }} />
+                          <div className="mt-2 rounded-lg p-2 bg-surface-alt border border-border">
+                            <div className="h-2.5 w-20 rounded-full mb-1.5 bg-border" />
+                            <div className="h-2 w-32 rounded-full bg-border" />
                           </div>
                         )}
                       </div>
@@ -873,20 +867,19 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
                   </div>
                   {/* Gradient fade to CTA */}
                   <div className="absolute inset-x-0 bottom-0 h-16"
-                    style={{ background: 'linear-gradient(to bottom, transparent, rgba(4,8,18,0.98))' }} />
+                    style={{ background: 'linear-gradient(to bottom, transparent, #EAE7DF)' }} />
                 </div>
 
                 {/* Pay CTA */}
                 <div className="px-4 pb-4 flex flex-col items-center gap-2">
                   <button onClick={() => setPaymentUrl(historyUrl)}
-                    className="w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]"
-                    style={{ background: 'linear-gradient(135deg, #0ea5e922, #6366f122)', border: '1px solid rgba(14,165,233,0.45)', color: '#38bdf8' }}>
+                    className="w-full py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-opacity hover:opacity-85 bg-ink text-background">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>
                     </svg>
-                    Pay {ETH_AMOUNT} ETH — Unlock Full History + Report
+                    Pay {ETH_AMOUNT} ETH to Unlock Full History + Report
                   </button>
-                  <div className="text-[11px] text-gray-600 text-center">
+                  <div className="text-[11px] text-muted text-center">
                     One-time · GIWA Sepolia · Verified on-chain
                   </div>
                 </div>
@@ -900,7 +893,7 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
           <>
             {/* Property info — all fields */}
             <div className="px-5 pt-4 pb-3">
-              <div className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">Property Info</div>
+              <div className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-3">Property Info</div>
               <div className="grid grid-cols-2 gap-x-5 gap-y-3">
                 {[
                   { label: 'Owner',        value: parcel?.owner,             span: true },
@@ -915,119 +908,125 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
                   { label: 'Land Class',   value: parcel?.land_class },
                 ].filter(r => r.value).map(({ label, value, span }) => (
                   <div key={label} className={span ? 'col-span-2' : ''}>
-                    <div className="text-[10px] text-gray-600 mb-0.5">{label}</div>
-                    <div className="text-gray-200 text-xs font-medium leading-snug">{value}</div>
+                    <div className="text-[10px] text-muted mb-0.5">{label}</div>
+                    <div className="text-ink text-xs font-medium leading-snug">{value}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mx-5 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }} />
+            <div className="mx-5 border-t border-border" />
 
             {/* On-chain verification */}
             <div className="px-5 py-3">
-              <div className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">On-Chain Verification</div>
-              <div className="flex items-center gap-3 p-3 rounded-xl"
-                style={{ background: onChain > 0 ? 'rgba(34,197,94,0.08)' : 'rgba(255,255,255,0.03)', border: onChain > 0 ? '1px solid rgba(34,197,94,0.2)' : '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-2">On-Chain Verification</div>
+              <div className={`flex items-center gap-3 p-3 rounded-xl border ${
+                onChain > 0 ? 'bg-green-50 border-green-200' : 'bg-surface-alt border-border'
+              }`}>
                 <div className="text-2xl flex-shrink-0">{onChain > 0 ? '✅' : '⏳'}</div>
                 <div>
-                  <div className="text-sm font-bold" style={{ color: onChain > 0 ? '#4ade80' : '#9ca3af' }}>
+                  <div className={`text-sm font-semibold ${onChain > 0 ? 'text-green-700' : 'text-muted'}`}>
                     {onChain > 0 ? `${onChain} of ${total} petition${total !== 1 ? 's' : ''} anchored on GIWA` : 'No petitions anchored yet'}
                   </div>
-                  <div className="text-[10px] text-gray-500 mt-0.5">TojiboxOracle.sol · GIWA Sepolia</div>
+                  <div className="text-[10px] text-muted mt-0.5">TojiboxOracle.sol · GIWA Sepolia</div>
                 </div>
               </div>
               {onChain > 0 && (
                 ORACLE_CONTRACT_ADDRESS ? (
                   <a href={giwaExplorerAddressUrl(ORACLE_CONTRACT_ADDRESS)}
                     target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 mt-2 text-[11px] text-sky-500 hover:text-sky-300 transition-colors">
+                    className="flex items-center gap-1.5 mt-2 text-[11px] text-ink hover:text-muted transition-colors">
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                     </svg>
                     View contract on GIWA Explorer ↗
                   </a>
                 ) : (
-                  <div className="mt-2 text-[11px] text-gray-600">Contract not yet deployed</div>
+                  <div className="mt-2 text-[11px] text-muted">Contract not yet deployed</div>
                 )
               )}
             </div>
 
-            <div className="mx-5 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }} />
+            <div className="mx-5 border-t border-border" />
 
             {/* Rezoning history */}
             <div className="px-5 py-3">
               <div className="flex items-center justify-between mb-3">
-                <div className="text-[10px] font-black uppercase tracking-widest text-gray-500">Rezoning History</div>
-                <div className="text-[10px] text-gray-600">{total} petition{total !== 1 ? 's' : ''}</div>
+                <div className="text-[10px] font-semibold uppercase tracking-widest text-muted">Rezoning History</div>
+                <div className="text-[10px] text-muted">{total} petition{total !== 1 ? 's' : ''}</div>
               </div>
               {history.length === 0 && (
-                <div className="text-xs text-gray-600 py-4 text-center">No rezoning petitions found.</div>
+                <div className="text-xs text-muted py-4 text-center">No rezoning petitions found.</div>
               )}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {history.map((pet, i) => {
                   const isOnChain = Boolean(pet.committed_at);
                   return (
-                    <div key={pet.petition_number + i} className="rounded-xl overflow-hidden"
-                      style={{ border: isOnChain ? '1px solid rgba(34,197,94,0.18)' : '1px solid rgba(255,255,255,0.06)', background: isOnChain ? 'rgba(34,197,94,0.04)' : 'rgba(255,255,255,0.02)' }}>
-                      <div className="px-3 py-2.5 flex items-center justify-between gap-2">
+                    <div key={pet.petition_number + i} className={`rounded-xl overflow-hidden border shadow-sm ${
+                      isOnChain ? 'border-green-200' : 'border-border'
+                    }`}>
+                      {/* Header strip — visually caps the card, separates it from the body */}
+                      <div className={`px-3 py-2.5 flex items-center justify-between gap-2 border-b ${
+                        isOnChain ? 'bg-green-50 border-green-200' : 'bg-surface-alt border-border'
+                      }`}>
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className="font-mono text-xs font-bold text-sky-300 flex-shrink-0">{pet.petition_number}</span>
+                          <span className="font-mono text-xs font-bold text-ink flex-shrink-0">{pet.petition_number}</span>
                           <StatusBadge status={pet.status} />
                         </div>
                         {isOnChain && (
-                          <span className="flex items-center gap-1 text-[10px] font-bold text-green-400 flex-shrink-0"
-                            style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.25)', padding: '2px 6px', borderRadius: '6px' }}>
+                          <span className="flex items-center gap-1 text-[10px] font-semibold text-green-700 flex-shrink-0 bg-green-100 border border-green-300"
+                            style={{ padding: '2px 6px', borderRadius: '6px' }}>
                             ⛓️ On-Chain
                           </span>
                         )}
                       </div>
-                      <div className="px-3 pb-2.5">
+                      <div className="px-3 pt-2.5 pb-3 bg-surface">
                         {(pet.current_zoning || pet.proposed_zoning) && (
-                          <div className="flex items-center gap-1.5 mb-2">
-                            <span className="px-2 py-0.5 rounded text-[11px] font-bold font-mono"
-                              style={{ background: 'rgba(14,165,233,0.12)', color: '#38bdf8' }}>{pet.current_zoning || '—'}</span>
-                            <svg className="w-3 h-3 text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                          <div className="flex items-center gap-1.5 mb-2.5">
+                            <span className="px-2 py-1 rounded-md text-[11px] font-bold font-mono bg-surface-alt border border-border text-muted" title="Current zoning">
+                              {pet.current_zoning || '—'}
+                            </span>
+                            <svg className="w-3.5 h-3.5 text-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                             </svg>
-                            <span className="px-2 py-0.5 rounded text-[11px] font-bold font-mono"
-                              style={{ background: 'rgba(249,115,22,0.12)', color: '#fb923c' }}>{pet.proposed_zoning || '—'}</span>
+                            <span className="px-2 py-1 rounded-md text-[11px] font-bold font-mono bg-ink text-background" title="Proposed zoning">
+                              {pet.proposed_zoning || '—'}
+                            </span>
                           </div>
                         )}
-                        <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-gray-500">
+                        <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-muted">
                           {pet.meeting_date && <span>📅 {fmtDate(pet.meeting_date)}</span>}
                           {pet.vote_result  && <span>🗳️ {pet.vote_result}</span>}
                           {pet.meeting_type && <span>{pet.meeting_type}</span>}
                         </div>
                         {pet.petition_address && (
-                          <div className="text-[10px] text-gray-600 mt-1 truncate">📍 {pet.petition_address}</div>
+                          <div className="text-[10px] text-muted mt-1 truncate">📍 {pet.petition_address}</div>
                         )}
                         {isOnChain && (
-                          <div className="mt-2.5 rounded-lg px-2.5 py-2 space-y-1"
-                            style={{ background: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.12)' }}>
-                            <div className="text-[10px] font-bold text-green-400 uppercase tracking-wider mb-1">On-Chain Proof</div>
+                          <div className="mt-2.5 rounded-lg px-2.5 py-2 space-y-1 bg-green-50 border border-green-200">
+                            <div className="text-[10px] font-semibold text-green-700 uppercase tracking-wider mb-1">On-Chain Proof</div>
                             {pet.evm_snapshot_index != null && (
                               <div className="flex items-center justify-between">
-                                <span className="text-[10px] text-gray-500">Batch ID</span>
-                                <span className="text-[10px] font-mono text-gray-300">#{pet.evm_snapshot_index}</span>
+                                <span className="text-[10px] text-muted">Batch ID</span>
+                                <span className="text-[10px] font-mono text-ink">#{pet.evm_snapshot_index}</span>
                               </div>
                             )}
                             {pet.evm_block && (
                               <div className="flex items-center justify-between">
-                                <span className="text-[10px] text-gray-500">Block</span>
-                                <span className="text-[10px] font-mono text-gray-300">{fmt(pet.evm_block)}</span>
+                                <span className="text-[10px] text-muted">Block</span>
+                                <span className="text-[10px] font-mono text-ink">{fmt(pet.evm_block)}</span>
                               </div>
                             )}
                             <div className="flex items-center justify-between">
-                              <span className="text-[10px] text-gray-500">Anchored</span>
-                              <span className="text-[10px] text-gray-300">{fmtDate(pet.committed_at)}</span>
+                              <span className="text-[10px] text-muted">Anchored</span>
+                              <span className="text-[10px] text-ink">{fmtDate(pet.committed_at)}</span>
                             </div>
                             {pet.evm_tx_hash && (
                               <div className="flex items-center justify-between mt-1">
-                                <span className="text-[10px] text-gray-500">TX</span>
+                                <span className="text-[10px] text-muted">TX</span>
                                 <a href={giwaExplorerTxUrl(pet.evm_tx_hash)}
                                   target="_blank" rel="noopener noreferrer"
-                                  className="text-[10px] font-mono text-sky-400 hover:text-sky-300 transition-colors">
+                                  className="text-[10px] font-mono text-ink underline underline-offset-2 hover:text-muted transition-colors">
                                   {shortHash(pet.evm_tx_hash)} ↗
                                 </a>
                               </div>
@@ -1036,7 +1035,7 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
                         )}
                         {pet.legislation_url && (
                           <a href={pet.legislation_url} target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 mt-2 text-[10px] text-indigo-400 hover:text-indigo-300 transition-colors">
+                            className="inline-flex items-center gap-1 mt-2.5 px-2 py-1 rounded-md text-[10px] font-medium text-ink underline underline-offset-2 decoration-muted hover:bg-surface-alt hover:decoration-ink transition-colors">
                             <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                             </svg>
@@ -1062,7 +1061,7 @@ function ParcelPanel({ pin, onClose, onParcelLoaded, mapRef }) {
 function AiPanel({ onHighlightFeatures, onClose }) {
   const [messages, setMessages] = useState([{
     role: 'assistant',
-    content: "Hi! Ask me anything about Wake County zoning — \"Show N1 to B1 conversions\", \"Find commercial rezonings near downtown\", or paste any address.",
+    content: "Hi! Ask me anything about Wake County zoning, such as \"Show N1 to B1 conversions\" or \"Find commercial rezonings near downtown,\" or paste any address.",
   }]);
   const [input, setInput]     = useState('');
   const [loading, setLoading] = useState(false);
@@ -1097,27 +1096,24 @@ function AiPanel({ onHighlightFeatures, onClose }) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between px-5 py-4 border-b flex-shrink-0"
-        style={{ borderColor: 'rgba(14,165,233,0.15)' }}>
+      <div className="flex items-center justify-between px-5 py-4 border-b border-border flex-shrink-0">
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xl">🤖</span>
-            <span className="font-black text-white tracking-wide">TOJIBOX AI</span>
+            <span className="font-wordmark text-ink text-sm tracking-wide">TOJIBOX AI</span>
           </div>
-          <div className="text-[10px] text-gray-500 mt-0.5">Wake County zoning assistant</div>
+          <div className="text-[10px] text-muted mt-0.5">Wake County zoning assistant</div>
         </div>
-        <button onClick={onClose} className="text-gray-600 hover:text-gray-300 transition-colors p-1">
+        <button onClick={onClose} className="text-muted hover:text-ink transition-colors p-1">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
-      <div className="px-4 py-3 border-b flex-shrink-0 flex flex-wrap gap-2"
-        style={{ borderColor: 'rgba(14,165,233,0.1)' }}>
+      <div className="px-4 py-3 border-b border-border flex-shrink-0 flex flex-wrap gap-2">
         {QUICK.map(q => (
           <button key={q} onClick={() => setInput(q)}
-            className="px-3 py-1.5 rounded-lg text-xs text-gray-300 hover:text-white transition-all"
-            style={{ background: 'rgba(14,165,233,0.1)', border: '1px solid rgba(14,165,233,0.2)' }}>
+            className="px-3 py-1.5 rounded-lg text-xs text-muted hover:text-ink bg-surface-alt border border-border transition-colors">
             {q}
           </button>
         ))}
@@ -1126,47 +1122,40 @@ function AiPanel({ onHighlightFeatures, onClose }) {
         {messages.map((m, i) => (
           <div key={i} className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : ''}`}>
             {m.role === 'assistant' && (
-              <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5"
-                style={{ background: 'linear-gradient(135deg, #0ea5e9, #6366f1)' }}>
+              <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5 bg-ink">
                 <span className="text-xs">🤖</span>
               </div>
             )}
-            <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed max-w-[85%] ${m.role === 'user' ? 'text-white' : 'text-gray-200'}`}
-              style={m.role === 'user'
-                ? { background: 'linear-gradient(135deg, #0ea5e9, #6366f1)' }
-                : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(14,165,233,0.1)' }}>
+            <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed max-w-[85%] ${
+              m.role === 'user' ? 'bg-ink text-background' : 'bg-surface-alt border border-border text-ink'
+            }`}>
               {m.content}
             </div>
           </div>
         ))}
         {loading && (
           <div className="flex gap-2.5">
-            <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #0ea5e9, #6366f1)' }}>
+            <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center bg-ink">
               <span className="text-xs">🤖</span>
             </div>
-            <div className="rounded-2xl px-4 py-3 flex gap-1.5"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(14,165,233,0.1)' }}>
+            <div className="rounded-2xl px-4 py-3 flex gap-1.5 bg-surface-alt border border-border">
               {[0, 0.18, 0.36].map((d, i) => (
                 <motion.div key={i} animate={{ opacity: [0.3, 1, 0.3] }}
                   transition={{ repeat: Infinity, duration: 1.2, delay: d }}
-                  className="w-2 h-2 bg-sky-400 rounded-full" />
+                  className="w-2 h-2 bg-muted rounded-full" />
               ))}
             </div>
           </div>
         )}
         <div ref={messagesEnd} />
       </div>
-      <form onSubmit={send} className="px-4 py-3 border-t flex-shrink-0 flex gap-2"
-        style={{ borderColor: 'rgba(14,165,233,0.15)' }}>
+      <form onSubmit={send} className="px-4 py-3 border-t border-border flex-shrink-0 flex gap-2">
         <input value={input} onChange={e => setInput(e.target.value)} disabled={loading}
           placeholder="Ask about zoning, petitions, developers…"
-          className="flex-1 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 disabled:opacity-50"
-          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(14,165,233,0.2)' }} />
+          className="flex-1 rounded-lg px-4 py-2.5 text-sm text-ink placeholder-muted bg-surface-alt border border-border focus:outline-none focus:ring-1 focus:ring-ink/30 disabled:opacity-50" />
         <button type="submit" disabled={loading || !input.trim()}
-          className="w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:scale-105 disabled:opacity-40"
-          style={{ background: 'linear-gradient(135deg, #0ea5e9, #6366f1)' }}>
-          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          className="w-10 h-10 rounded-lg flex items-center justify-center transition-opacity hover:opacity-85 disabled:opacity-40 bg-ink">
+          <svg className="w-4 h-4 text-background" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
           </svg>
         </button>
@@ -1185,7 +1174,7 @@ export default function MapPage() {
   const aiHighlightRef     = useRef([]);
   const onChainMarkerRef   = useRef(null);  // mapboxgl.Marker for on-chain badge
 
-  const [mapStyle, setMapStyle]             = useState('dark');
+  const [mapStyle, setMapStyle]             = useState('light');
   const [showStyleMenu, setShowStyleMenu]   = useState(false);
   const [isChatOpen, setIsChatOpen]         = useState(false);
   const [isDetailOpen, setIsDetailOpen]     = useState(false);
@@ -1349,7 +1338,7 @@ export default function MapPage() {
     if (map.current || !mapContainer.current) return;
     map.current = new mapboxgl.Map({
       container:              mapContainer.current,
-      style:                  MAP_STYLES.dark.url,
+      style:                  MAP_STYLES.light.url,
       center:                 MAP_CENTER,
       zoom:                   MAP_ZOOM,
       preserveDrawingBuffer:  true,   // required for canvas.toDataURL() in PDF export
@@ -1445,7 +1434,7 @@ export default function MapPage() {
         const pin = features[0].properties?.pin;
         if (pin) openDetail(pin);
       } else {
-        setSearchHint('Flew to location — click a parcel to inspect it');
+        setSearchHint('Flew to location. Click a parcel to inspect it.');
         setTimeout(() => setSearchHint(''), 4000);
       }
     });
@@ -1485,7 +1474,7 @@ export default function MapPage() {
         setGeocodeResults(features);
       }
     } catch {
-      setSearchError('Search failed — check connection');
+      setSearchError('Search failed, check your connection');
     } finally {
       setSearchLoading(false);
     }
@@ -1496,7 +1485,7 @@ export default function MapPage() {
   const rightW = isDetailOpen ? 380 : 0;
 
   return (
-    <div className="relative w-full h-screen bg-black overflow-hidden">
+    <div className="relative w-full h-screen bg-background overflow-hidden">
 
       {/* ── Map ── */}
       <div
@@ -1511,20 +1500,19 @@ export default function MapPage() {
         style={{
           left:       leftW,
           right:      rightW,
-          background: 'linear-gradient(to bottom, rgba(5,10,16,0.88) 0%, transparent 100%)',
+          background: 'linear-gradient(to bottom, rgba(242,240,234,0.92) 0%, transparent 100%)',
         }}>
 
         <div className="flex items-center gap-3 flex-shrink-0">
           <a href="/" className="flex items-center gap-2">
-            <img src="/tojibox-favicon.svg" alt="Tojibox" className="h-8 w-8 flex-shrink-0" />
+            <span className="w-8 h-8 rounded-lg bg-ink text-background flex items-center justify-center font-wordmark text-xs flex-shrink-0">T</span>
             <div className="hidden sm:block leading-none">
-              <div className="text-white font-black text-sm">Tojibox</div>
-              <div className="text-gray-500 text-[10px]">Wake County · 434k parcels</div>
+              <div className="text-ink font-semibold text-sm">Tojibox</div>
+              <div className="text-muted text-[10px]">Wake County · 434k parcels</div>
             </div>
           </a>
           <a href="/tech"
-            className="hidden lg:block px-3 py-1 rounded-lg text-[10px] font-semibold transition-colors hover:text-white"
-            style={{ color: '#38bdf8', border: '1px solid rgba(14,165,233,0.2)' }}>
+            className="hidden lg:block px-3 py-1 rounded-lg text-[10px] font-semibold text-muted border border-border transition-colors hover:text-ink hover:bg-surface">
             How It Works
           </a>
         </div>
@@ -1533,7 +1521,7 @@ export default function MapPage() {
         <div className="flex-1 max-w-lg relative">
           <form onSubmit={handleSearch} className="flex gap-1.5">
             <div className="relative flex-1">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -1545,22 +1533,18 @@ export default function MapPage() {
                 onChange={e => { setSearchQuery(e.target.value); setSearchError(''); setSearchHint(''); setGeocodeResults([]); }}
                 onKeyDown={e => e.key === 'Escape' && setGeocodeResults([])}
                 placeholder="Search address or petition (Z-29-2023)…"
-                className="w-full pl-8 pr-3 py-2 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50"
-                style={{
-                  background: 'rgba(255,255,255,0.08)',
-                  border: searchError ? '1px solid rgba(239,68,68,0.5)' : '1px solid rgba(255,255,255,0.1)',
-                }}
+                className="w-full pl-8 pr-3 py-2 rounded-lg text-xs text-ink placeholder-muted bg-surface focus:outline-none focus:ring-1 focus:ring-ink/30"
+                style={{ border: searchError ? '1px solid #DC2626' : '1px solid #E2DED3' }}
               />
               <AnimatePresence>
                 {geocodeResults.length > 1 && (
                   <motion.div
                     initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
-                    className="absolute top-full mt-1 left-0 right-0 rounded-xl overflow-hidden z-50 py-1"
-                    style={{ background: '#0d1520', border: '1px solid rgba(14,165,233,0.2)' }}>
+                    className="absolute top-full mt-1 left-0 right-0 rounded-xl overflow-hidden z-50 py-1 bg-surface border border-border shadow-lg">
                     {geocodeResults.map(r => (
                       <button key={r.id} type="button" onClick={() => flyToResult(r)}
-                        className="flex w-full text-left px-3 py-2 text-xs text-gray-300 hover:bg-sky-500/10 hover:text-white gap-2 items-start">
-                        <svg className="w-3 h-3 text-sky-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        className="flex w-full text-left px-3 py-2 text-xs text-muted hover:bg-surface-alt hover:text-ink gap-2 items-start">
+                        <svg className="w-3 h-3 text-ink flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                             d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -1572,19 +1556,18 @@ export default function MapPage() {
                 )}
               </AnimatePresence>
               {searchError && (
-                <div className="absolute top-full mt-1 left-0 text-[10px] text-red-400 bg-black/85 px-2 py-1 rounded whitespace-nowrap z-50">
+                <div className="absolute top-full mt-1 left-0 text-[10px] text-red-700 bg-surface border border-red-200 px-2 py-1 rounded whitespace-nowrap z-50">
                   {searchError}
                 </div>
               )}
               {searchHint && !searchError && (
-                <div className="absolute top-full mt-1 left-0 text-[10px] text-sky-400 bg-black/85 px-2 py-1 rounded whitespace-nowrap z-50">
+                <div className="absolute top-full mt-1 left-0 text-[10px] text-ink bg-surface border border-border px-2 py-1 rounded whitespace-nowrap z-50">
                   {searchHint}
                 </div>
               )}
             </div>
             <button type="submit" disabled={searchLoading || !searchQuery.trim()}
-              className="px-3 py-2 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-colors disabled:opacity-40 flex-shrink-0"
-              style={{ background: 'rgba(14,165,233,0.15)', border: '1px solid rgba(14,165,233,0.3)' }}>
+              className="px-3 py-2 rounded-lg text-xs font-medium text-ink bg-surface border border-border hover:bg-surface-alt transition-colors disabled:opacity-40 flex-shrink-0">
               {searchLoading
                 ? <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -1597,13 +1580,11 @@ export default function MapPage() {
 
         {/* Legend */}
         <div className="hidden lg:flex items-center gap-2 flex-shrink-0">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px]"
-            style={{ background: 'rgba(14,165,233,0.1)', border: '1px solid rgba(14,165,233,0.2)', color: '#38bdf8' }}>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] bg-surface border border-border text-muted">
             <span className="w-2 h-2 rounded-sm" style={{ background: '#0ea5e9' }} />
             All parcels
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px]"
-            style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', color: '#4ade80' }}>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] bg-surface border border-border text-muted">
             <span className="w-2 h-2 rounded-sm" style={{ background: '#22c55e' }} />
             Selected
           </div>
@@ -1612,18 +1593,17 @@ export default function MapPage() {
         {/* Style switcher */}
         <div className="relative flex-shrink-0">
           <button onClick={() => setShowStyleMenu(v => !v)}
-            className="px-3 py-2 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-colors"
-            style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}>
+            className="px-3 py-2 rounded-lg text-xs font-medium text-ink bg-surface border border-border hover:bg-surface-alt transition-colors">
             {MAP_STYLES[mapStyle].name} ▾
           </button>
           <AnimatePresence>
             {showStyleMenu && (
               <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-                className="absolute right-0 top-full mt-1 rounded-xl overflow-hidden py-1 z-50"
-                style={{ background: '#0d1520', border: '1px solid rgba(14,165,233,0.2)', minWidth: '130px' }}>
+                className="absolute right-0 top-full mt-1 rounded-xl overflow-hidden py-1 z-50 bg-surface border border-border shadow-lg"
+                style={{ minWidth: '130px' }}>
                 {Object.entries(MAP_STYLES).map(([key, s]) => (
                   <button key={key} onClick={() => switchStyle(key)}
-                    className={`block w-full text-left px-4 py-2 text-xs transition-colors ${mapStyle === key ? 'text-sky-400 font-semibold' : 'text-gray-400 hover:text-white'}`}>
+                    className={`block w-full text-left px-4 py-2 text-xs transition-colors ${mapStyle === key ? 'text-ink font-semibold' : 'text-muted hover:text-ink'}`}>
                     {s.name}
                   </button>
                 ))}
@@ -1634,10 +1614,9 @@ export default function MapPage() {
 
         {/* AI chat toggle */}
         <button onClick={() => { setIsChatOpen(v => !v); if (!isChatOpen) setIsDetailOpen(false); }}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0"
-          style={isChatOpen
-            ? { background: 'linear-gradient(135deg, #0ea5e9, #6366f1)', color: '#fff', boxShadow: '0 4px 16px rgba(14,165,233,0.4)' }
-            : { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', color: '#d1d5db' }}>
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-colors flex-shrink-0 ${
+            isChatOpen ? 'bg-ink text-background' : 'bg-surface border border-border text-ink hover:bg-surface-alt'
+          }`}>
           🤖 <span className="hidden sm:inline">AI Chat</span>
         </button>
       </div>
@@ -1648,8 +1627,8 @@ export default function MapPage() {
           <motion.div
             initial={{ x: -420, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -420, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-            className="absolute left-0 top-0 h-full w-[400px] z-30 flex flex-col"
-            style={{ background: 'rgba(5,10,20,0.98)', borderRight: '1px solid rgba(14,165,233,0.15)', backdropFilter: 'blur(20px)' }}>
+            className="absolute left-0 top-0 h-full w-[400px] z-30 flex flex-col bg-surface border-r border-border"
+            style={{ backdropFilter: 'blur(20px)' }}>
             <AiPanel onHighlightFeatures={highlightAiFeatures} onClose={() => setIsChatOpen(false)} />
           </motion.div>
         )}
@@ -1661,8 +1640,8 @@ export default function MapPage() {
           <motion.div
             initial={{ x: 400, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 400, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-            className="absolute right-0 top-0 h-full w-[380px] z-30 flex flex-col"
-            style={{ background: 'rgba(5,10,20,0.98)', borderLeft: '1px solid rgba(14,165,233,0.15)', backdropFilter: 'blur(20px)' }}>
+            className="absolute right-0 top-0 h-full w-[380px] z-30 flex flex-col bg-surface border-l border-border"
+            style={{ backdropFilter: 'blur(20px)' }}>
             <ParcelPanel pin={detailPin} onClose={closeDetail} onParcelLoaded={handleParcelLoaded} mapRef={map} />
           </motion.div>
         )}
@@ -1670,23 +1649,18 @@ export default function MapPage() {
 
       {/* ── GIWA status badge ── */}
       <div
-        className="absolute bottom-6 z-20 flex items-center gap-2 px-3 py-2 rounded-xl transition-[left] duration-300"
-        style={{
-          left:           leftW + 12,
-          background:     'rgba(5,10,20,0.82)',
-          border:         '1px solid rgba(14,165,233,0.15)',
-          backdropFilter: 'blur(12px)',
-        }}>
-        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-        <span className="text-[11px] text-gray-400 font-medium">GIWA Sepolia</span>
+        className="absolute bottom-6 z-20 flex items-center gap-2 px-3 py-2 rounded-lg transition-[left] duration-300 bg-surface border border-border"
+        style={{ left: leftW + 12, backdropFilter: 'blur(12px)' }}>
+        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+        <span className="text-[11px] text-muted font-medium">GIWA Sepolia</span>
         {ORACLE_CONTRACT_ADDRESS ? (
           <a href={giwaExplorerAddressUrl(ORACLE_CONTRACT_ADDRESS)}
             target="_blank" rel="noopener noreferrer"
-            className="text-[11px] text-sky-500 hover:text-sky-300 transition-colors">
+            className="text-[11px] text-ink hover:text-muted transition-colors">
             {shortHash(ORACLE_CONTRACT_ADDRESS)} ↗
           </a>
         ) : (
-          <span className="text-[11px] text-gray-600">contract not yet deployed</span>
+          <span className="text-[11px] text-muted">contract not yet deployed</span>
         )}
       </div>
     </div>
