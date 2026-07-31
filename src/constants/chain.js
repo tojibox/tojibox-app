@@ -3,7 +3,7 @@
  * https://sepolia-explorer.giwa.io
  */
 export const GIWA_SEPOLIA = {
-  chainId: '0x164ee', // 91342
+  chainId: '0x164ce', // 91342 (verified: parseInt('0x164ee',16) is actually 91374, a different chain — that was the bug)
   chainName: 'GIWA Sepolia',
   nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
   rpcUrls: ['https://sepolia-rpc.giwa.io/'],
@@ -26,7 +26,7 @@ export const RECEIVER_ADDRESS =
 
 // Price for unlocking a full parcel history + PDF report (matches tojibox-api's
 // x402 middleware default price, configurable there via .env).
-export const ETH_AMOUNT = 0.001;
+export const ETH_AMOUNT = 0.0001;
 
 // Deployed contract addresses — optional, used for "view on GIWA" links across
 // the app. Left blank until tojibox-scraper / tojibox-api are deployed; UI

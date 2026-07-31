@@ -17,12 +17,22 @@ import { GIWA_SEPOLIA, RECEIVER_ADDRESS, ETH_AMOUNT } from '../constants/chain';
 
 export { RECEIVER_ADDRESS, ETH_AMOUNT };
 
+// Ethers v6's BrowserProvider wraps EIP-1193 errors it doesn't recognize as
+// its own UNKNOWN_ERROR, nesting the wallet's real error (with the real
+// .code) inside .error or .info.error instead of on the thrown object
+// itself — so `err.code === 4902` never matches and this fell through to
+// `throw err` instead of ever calling wallet_addEthereumChain.
+export function rpcErrorCode(err) {
+  return err?.code ?? err?.error?.code ?? err?.info?.error?.code;
+}
+
 async function ensureGiwaSepolia(provider) {
   try {
     await provider.send('wallet_switchEthereumChain', [{ chainId: GIWA_SEPOLIA.chainId }]);
   } catch (err) {
     // 4902 = chain not added yet; some wallets surface this as -32603 instead.
-    if (err.code === 4902 || err.code === -32603) {
+    const code = rpcErrorCode(err);
+    if (code === 4902 || code === -32603) {
       await provider.send('wallet_addEthereumChain', [GIWA_SEPOLIA]);
     } else {
       throw err;
